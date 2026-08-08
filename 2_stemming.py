@@ -1,43 +1,43 @@
 # ==============================================================================
 # MODULE 02: STEMMING
 # ==============================================================================
+"""
+WHAT IS STEMMING?
+-----------------
+Stemming is the process of reducing a word to its ROOT FORM (called "stem").
+It chops off the ending of words using simple rules.
 
-# WHAT IS STEMMING?
-# -----------------
-# Stemming is the process of reducing a word to its ROOT FORM (called "stem").
-# It chops off the ending of words using simple rules.
+Example:
+    "running"  -> "run"       (removed "ning")
+    "studies"  -> "studi"     (removed "es", changed "y" to "i")
+    "played"   -> "play"      (removed "ed")
 
-# Example:
-#     "running"  -> "run"       (removed "ning")
-#     "studies"  -> "studi"     (removed "es", changed "y" to "i")
-#     "played"   -> "play"      (removed "ed")
+WHY DO WE NEED STEMMING?
+-------------------------
+In NLP, we often want to treat different forms of the same word as ONE word.
+    - "run", "running", "runs", "ran" -> all mean the same concept: "run"
+    - Without stemming, the computer treats them as 4 DIFFERENT words!
+    - With stemming, they all become "run" (or something close to it)
 
-# WHY DO WE NEED STEMMING?
-# -------------------------
-# In NLP, we often want to treat different forms of the same word as ONE word.
-#     - "run", "running", "runs", "ran" -> all mean the same concept: "run"
-#     - Without stemming, the computer treats them as 4 DIFFERENT words!
-#     - With stemming, they all become "run" (or something close to it)
+This helps in:
+    - Search engines (searching "running" also finds "run", "runs")
+    - Text classification (reduces vocabulary size)
+    - Sentiment analysis (different forms = same meaning)
 
-# This helps in:
-#     - Search engines (searching "running" also finds "run", "runs")
-#     - Text classification (reduces vocabulary size)
-#     - Sentiment analysis (different forms = same meaning)
-
-# IMPORTANT NOTE:
-#     Stemming is FAST but NOT ALWAYS ACCURATE.
-#     It uses simple rules to chop off word endings, so sometimes
-#     the result is NOT a real word:
-#         "studies" -> "studi" (not a real word, but that's ok!)
-#         "fairly"  -> "fairli" (not a real word either)
+IMPORTANT NOTE:
+    Stemming is FAST but NOT ALWAYS ACCURATE.
+    It uses simple rules to chop off word endings, so sometimes
+    the result is NOT a real word:
+        "studies" -> "studi" (not a real word, but that's ok!)
+        "fairly"  -> "fairli" (not a real word either)
     
-#     If you need real dictionary words, use LEMMATIZATION (Module 03).
+    If you need real dictionary words, use LEMMATIZATION (Module 03).
 
-# THREE TYPES OF STEMMERS IN NLTK:
-# ---------------------------------
-# 1. PORTER STEMMER    -> Most popular, gentle, widely used
-# 2. SNOWBALL STEMMER  -> Improved Porter, supports multiple languages
-# 3. LANCASTER STEMMER -> Most aggressive, chops the most
+THREE TYPES OF STEMMERS IN NLTK:
+---------------------------------
+1. PORTER STEMMER    -> Most popular, gentle, widely used
+2. SNOWBALL STEMMER  -> Improved Porter, supports multiple languages
+3. LANCASTER STEMMER -> Most aggressive, chops the most
 
 
 # ==============================================================================
@@ -54,7 +54,7 @@ words = [
     'connection', 'connected', 'connecting',  # forms of "connect"
     'generalization', 'generalize'        # forms of "general"
 ]
-
+"""
 
 # ============================================================================
 # SECTION 1: PORTER STEMMER

@@ -1,32 +1,33 @@
-# MODULE 01: TOKENIZATION
-# WHAT IS TOKENIZATION?
-# ---------------------
-# Tokenization is the very FIRST step in any NLP pipeline.
-# It means breaking a large piece of text into smaller pieces called "tokens".
+"""MODULE 01: TOKENIZATION
+WHAT IS TOKENIZATION?
+---------------------
+Tokenization is the very FIRST step in any NLP pipeline.
+It means breaking a large piece of text into smaller pieces called "tokens".
 
-# Think of it like this:
-#     - You have a paragraph (a big chunk of text).
-#     - You want to break it into sentences, words, or even characters.
-#     - Each small piece = one "token".
+Think of it like this:
+    - You have a paragraph (a big chunk of text).
+    - You want to break it into sentences, words, or even characters.
+    - Each small piece = one "token".
 
-# WHY DO WE NEED IT?
-# ------------------
-# Computers don't understand text the way humans do.
-# They need the text to be split into small, manageable pieces so they can
-# process each piece individually (count words, find patterns, etc.)
+WHY DO WE NEED IT?
+------------------
+Computers don't understand text the way humans do.
+They need the text to be split into small, manageable pieces so they can
+process each piece individually (count words, find patterns, etc.)
 
-# TYPES OF TOKENIZATION:
-# ----------------------
-# 1. SENTENCE Tokenization  -> Splits text into sentences
-# 2. WORD Tokenization       -> Splits text into words
-# 3. CHARACTER Tokenization  -> Splits text into individual characters
-# 4. SUBWORD Tokenization    -> Splits text into subword units (used in modern AI models)
+TYPES OF TOKENIZATION:
+----------------------
+1. SENTENCE Tokenization  -> Splits text into sentences
+2. WORD Tokenization       -> Splits text into words
+3. CHARACTER Tokenization  -> Splits text into individual characters
+4. SUBWORD Tokenization    -> Splits text into subword units (used in modern AI models)
 
-# LIBRARIES USED:
-#     - NLTK  (Natural Language Toolkit) -> for sentence & word tokenization
-#     - SpaCy                            -> for sentence & word tokenization
-#     - (Manual Python)                  -> for character tokenization
-#     - (Manual / tiktoken)              -> for subword tokenization concept
+LIBRARIES USED:
+    - NLTK  (Natural Language Toolkit) -> for sentence & word tokenization
+    - SpaCy                            -> for sentence & word tokenization
+    - (Manual Python)                  -> for character tokenization
+    - (Manual / tiktoken)              -> for subword tokenization concept
+    """
 # -----------------------------------------------------------------------------------------------------------------------------
 
 
@@ -116,16 +117,17 @@ print(f"Tokens: {words_spacy}")
 # ============================================================================
 # SECTION 3: CHARACTER TOKENIZATION (Breaking text into characters)
 # ============================================================================
+"""
+CHARACTER TOKENIZATION
+----------------------
+This is the simplest form. Each character (letter, space, punctuation)
+becomes its own token. No special library needed - just use Python's list()
 
-# CHARACTER TOKENIZATION
-# ----------------------
-# This is the simplest form. Each character (letter, space, punctuation)
-# becomes its own token. No special library needed - just use Python's list()
-#
-# WHEN IS IT USED?
-# - In some deep learning models (character-level models)
-# - For languages that don't use spaces between words (like Chinese, Japanese)
-# - For spelling correction systems
+WHEN IS IT USED?
+- In some deep learning models (character-level models)
+- For languages that don't use spaces between words (like Chinese, Japanese)
+- For spelling correction systems
+"""
 
 text = "Hello NLP!"
 
@@ -155,30 +157,32 @@ print(f"Alpha-only Tokens: {char_tokens_alpha}")
 
 # SUBWORD TOKENIZATION
 # --------------------
-# This is used in modern AI / Transformer models (GPT, BERT, etc.)
-#
-# WHY SUBWORD?
-# - Word tokenization has a problem: what about rare or unknown words?
-#   Example: "unhappiness" might not be in the vocabulary
-# - Subword tokenization breaks it into: ["un", "happi", "ness"]
-#   Now the model can understand it from its parts!
-#
-# COMMON SUBWORD METHODS:
-#   1. BPE (Byte Pair Encoding)     -> Used in GPT models
-#   2. WordPiece                    -> Used in BERT
-#   3. SentencePiece                -> Used in T5, ALBERT
-#
-# HOW DOES BPE WORK? (Simplified)
-# --------------------------------
-# Step 1: Start with all individual characters
-# Step 2: Find the most common pair of adjacent characters
-# Step 3: Merge that pair into a single token
-# Step 4: Repeat steps 2-3 until you reach the desired vocabulary size
-#
-# Example with "low", "lower", "newest", "widest":
-#   Start:  l, o, w, e, r, n, w, e, s, t, w, i, d, e, s, t
-#   After BPE merges: "low", "er", "new", "est", "wid", "est"
-#   Common parts like "est" get their own token!
+"""
+This is used in modern AI / Transformer models (GPT, BERT, etc.)
+
+WHY SUBWORD?
+- Word tokenization has a problem: what about rare or unknown words?
+  Example: "unhappiness" might not be in the vocabulary
+- Subword tokenization breaks it into: ["un", "happi", "ness"]
+  Now the model can understand it from its parts!
+
+COMMON SUBWORD METHODS:
+  1. BPE (Byte Pair Encoding)     -> Used in GPT models
+  2. WordPiece                    -> Used in BERT
+  3. SentencePiece                -> Used in T5, ALBERT
+
+HOW DOES BPE WORK? (Simplified)
+--------------------------------
+Step 1: Start with all individual characters
+Step 2: Find the most common pair of adjacent characters
+Step 3: Merge that pair into a single token
+Step 4: Repeat steps 2-3 until you reach the desired vocabulary size
+
+Example with "low", "lower", "newest", "widest":
+  Start:  l, o, w, e, r, n, w, e, s, t, w, i, d, e, s, t
+  After BPE merges: "low", "er", "new", "est", "wid", "est"
+  Common parts like "est" get their own token!
+  """
 
 print("\n" + "=" * 70)
 print("SUBWORD TOKENIZATION (Concept Demonstration)")
