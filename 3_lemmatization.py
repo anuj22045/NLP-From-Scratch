@@ -46,70 +46,162 @@ LIBRARIES USED:
 
 ==============================================================================
 """
+# ============================================================================
+# SECTION 1: LEMMATIZATION WITH SPACY
+# ============================================================================
+
+import spacy 
+#load the english language model
+#this model contain vocabulary, grammar rules, and vectors
+nlp = spacy.load("en_core_web_sm")
+
+print("="*65)
+print("Lemmatization with Spacy")
+print("="*65)
+
+
+# -----example 1: Simpple Sentence----
+text = "The mice were eating delicious meals while the children played happily in the parks"
+doc = nlp(text)
+
+print(f"\n Original text: {text}\n")
+print(f"{'Word':<15} {'Lemma':<15} {'POS':<10} {'Explanation'}")
+print("-"*50)
+
+for token in doc:
+    print(f"{token.text:<15} {token.lemma_:<15} {token.pos_:<10} {spacy.explain(token.pos_)}")
+
+
+#-----example 2 : large text -------
+
+print("\n" + "=" * 70)
+print("LEMMATIZATION ON COMPLEX TEXT")
+print("=" * 70)
+
+text2 = """Based on coalescence of Mitochondrial DNA and Y Chromosome data, 
+it is thought that the earliest extant lineages of anatomically modern humans 
+had reached there from Africa between 80,000 and 50,000 years ago. Their long 
+occupation, initially in varying forms of isolation as hunter-gatherers, has 
+made the region highly diverse. These cultures gradually evolved into the 
+Indus Valley Civilisation, which flourished during 2500-1900 BCE."""
+
+doc2 = nlp(text2)
+
+print(f"\nOriginal Text:\n{text2}\n")
+print(f"{'Word':<20} -----> {'Lemma':<20}")
+print("-" * 45)
+
+for token in doc2:
+    if token.text.lower() != token.lemma_.lower() and token.is_alpha:
+        print(f"{token.text:<20} --------> {token.lemma_:<20}")
+
+
+# ============================================================================
+# SECTION 2: LEMMATIZATION WITH NLTK (WordNet Lemmatizer)
+# ============================================================================
+
 import nltk
-from nltk.tokenize import sent_tokenize, word_tokenize
+nltk.download('wordnet', quiet=True)
+nltk.download('punkt_tab', quiet=True)
+
+from nltk.stem import WordNetLemmatizer
+from nltk.tokenize import word_tokenize
 
 print("\n" + "=" * 70)
-print("SUBWORD TOKENIZATION (Concept Demonstration)")
+print("LEMMATIZATION WITH NLTK (WordNet Lemmatizer)")
 print("=" * 70)
 
-# Let's demonstrate BPE concept manually with a simple example
-text = "unhappiness"
+# IMPORTANT: NLTK's WordNetLemmatizer needs you to specify the POS (Part of Speech)
+# If you don't specify, it assumes the word is a NOUN by default
+# POS tags for WordNet:
+#   'n' = noun, 'v' = verb, 'a' = adjective, 'r' = adverb
 
-# A hypothetical subword vocabulary might break this as:
-subword_tokens = ["un", "##happi", "##ness"]
-# The "##" prefix means "this continues the previous token"
-# This is the WordPiece style (used in BERT)
+lemmatizer = WordNetLemmatizer()
 
-print(f"Original Word: {text}")
-print(f"Subword Tokens (WordPiece style): {subword_tokens}")
-print(f"Explanation: 'un' = prefix, '##happi' = root, '##ness' = suffix")
+print("\n without POS (default to noun)")
+test_words = ['running', 'better', 'studies', 'geese', 'was', 'happily']
+for word in test_words:
+    result = lemmatizer.lemmatize(word)
+    print(f"  {word:<15} -> {result:<15}")
 
-# BPE style (used in GPT) - uses special spacing markers
-bpe_tokens = ["un", "happ", "iness"]
-print(f"\nSubword Tokens (BPE style): {bpe_tokens}")
+# NOTICE: "running" stays "running" because as a NOUN, "running" IS the base form!
+# "better" stays "better" because as a NOUN, it doesn't change!
 
-# Let's show a practical example using Python's built-in approach
-# to simulate subword tokenization
-words_to_tokenize = ["playing", "unhappiness", "internationalization", "preprocessing"]
 
-print(f"\nManual Subword Breakdown:")
-print(f"{'Word':<25} {'Possible Subwords'}")
+#with correct POS
+
+print("\nWith correct POS specified:")
+word_pos_pairs = [
+    ('running', 'v'),     # verb -> should give "run"
+    ('better', 'a'),      # adjective -> should give "good"
+    ('studies', 'n'),     # noun -> should give "study"
+    ('studies', 'v'),     # verb -> should give "study"
+    ('geese', 'n'),       # noun -> should give "goose"
+    ('was', 'v'),         # verb -> should give "be" (may not work in NLTK)
+    ('happily', 'r'),     # adverb -> should give "happily"
+]
+
+for word, pos in word_pos_pairs:
+    result = lemmatizer.lemmatize(word, pos=pos)
+    pos_name = {'n': 'noun', 'v': 'verb', 'a': 'adj', 'r': 'adverb'}[pos]
+    print(f"  {word:<15} (as {pos_name:<8}) -> {result:<15}")
+
+
+# ============================================================================
+# SECTION 3: SPACY vs NLTK COMPARISON
+# ============================================================================
+
+print("\n" + "=" * 70)
+print("COMPARISON: SpaCy vs NLTK Lemmatization")
+print("=" * 70)
+
+comparison_words = ['running', 'better', 'studies', 'was', 'mice', 'feet', 'happily', 'went', 'children']
+
+print(f"\n{'Word':<15} {'SpaCy':<15} {'NLTK (noun)':<15} {'NLTK (verb)':<15}")
 print("-" * 60)
-# These are approximate subword splits for demonstration
-subword_map = {
-    "playing":               ["play", "##ing"],
-    "unhappiness":           ["un", "##happi", "##ness"],
-    "internationalization":  ["inter", "##national", "##ization"],
-    "preprocessing":         ["pre", "##process", "##ing"]
-}
-for word in words_to_tokenize:
-    print(f"{word:<25} {subword_map[word]}")
 
-print("\nNote: Modern models like GPT and BERT use subword tokenization")
-print("      to handle any word, even ones they have never seen before!")
+for word in comparison_words:
+    # SpaCy lemmatization (automatic POS detection)
+    doc = nlp(word)
+    spacy_lemma = doc[0].lemma_
+
+    # NLTK lemmatization (manual POS)
+    nltk_noun = lemmatizer.lemmatize(word, pos='n')
+    nltk_verb = lemmatizer.lemmatize(word, pos='v')
+
+    print(f"{word:<15} {spacy_lemma:<15} {nltk_noun:<15} {nltk_verb:<15}")
+
+
+# KEY INSIGHT:
+# SpaCy is better for lemmatization because:
+# 1. It automatically detects POS (you don't have to specify it)
+# 2. It handles irregular words better ("better" -> "good", "was" -> "be")
+# 3. It uses context to determine the correct lemma
 
 
 # ============================================================================
-# SECTION 5: COMPARISON OF ALL TOKENIZATION TYPES
+# SECTION 4: PRACTICAL EXAMPLE - LEMMATIZING A FULL SENTENCE
 # ============================================================================
 
 print("\n" + "=" * 70)
-print("COMPARISON: ALL TOKENIZATION TYPES")
+print("PRACTICAL EXAMPLE: Lemmatization in Action")
 print("=" * 70)
 
-sample = "I am learning NLP!"
+sentence = "The striped bats were hanging on their feet and ate best fishes"
 
-print(f"\nOriginal Text: '{sample}'\n")
+# Using SpaCy for lemmatization
+doc = nlp(sentence)
+lemmatized_sentence = " ".join([token.lemma_ for token in doc])
 
-# Sentence
-print(f"1. Sentence Tokens:   {sent_tokenize(sample)}")
+print(f"\nOriginal:    {sentence}")
+print(f"Lemmatized:  {lemmatized_sentence}")
 
-# Word
-print(f"2. Word Tokens:       {word_tokenize(sample)}")
-
-# Character
-print(f"3. Character Tokens:  {list(sample)}")
-
-# Subword (conceptual)
-print(f"4. Subword Tokens:    ['I', 'am', 'learn', '##ing', 'NL', '##P', '!']")
+# NOTICE:
+# "striped"  -> "stripe"   (adjective/verb reduced)
+# "bats"     -> "bat"      (plural -> singular)
+# "were"     -> "be"       (irregular verb)
+# "hanging"  -> "hang"     (verb reduced)
+# "feet"     -> "foot"     (irregular plural!)
+# "ate"      -> "eat"      (irregular past tense!)
+# "best"     -> "good"     (superlative -> base form!)
+# "fishes"   -> "fish"     (plural -> singular)
