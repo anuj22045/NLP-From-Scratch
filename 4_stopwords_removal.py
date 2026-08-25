@@ -78,3 +78,76 @@ for token in doc:
     print(f"Spacy total Stopwords: {len(nlp.Defaults.stop_words)}")
 
     print(f"SpaCy total stopwords: {len(nlp.Defaults.stop_words)}")
+
+
+# ============================================================================
+# SECTION 3: CUSTOMIZING STOPWORDS
+# ============================================================================
+
+print("\n" + "=" * 70)
+print("CUSTOMIZING STOPWORDS")
+print("=" * 70)
+
+#Adding custom stopwords
+
+custom_stops = stop_words_nltk.copy()
+custom_stops.add("example")
+custom_stops.add("demonstrate")
+
+words = word_tokenize(text.lower())
+filtered_custom = [w for w in words if w not in custom_stops and w.isalpha()]
+print(f"\n With custom stops added: {filtered_custom}")
+
+#keeping negation words for sentiment analysis
+
+sentiment_stops = stop_words_nltk.copy()
+for w in ["not", "no", "never"]:
+    sentiment_stops.discard(w)
+
+
+text2 = "This movie is not good and I will never watch it again"
+
+words2 = word_tokenize(text2.lower())
+print(f"\n Original: (text2)")
+print(f"Default Removal: {[w for w in words2 if w not in stop_words_nltk and w.isalpha()]}")
+print(f"Sentiment removal: {[w for w in words2 if w not in sentiment_stops and w.isalpha()]}")
+print(" -> 'not' and 'never' KEPT because they change meaning")
+
+
+
+# ============================================================================
+# SECTION 4: MULTI-LANGUAGE STOPWORDS
+# ============================================================================
+
+
+print("\n" + "=" * 70)
+print("STOPWORDS IN OTHER LANGUAGES")
+print("=" * 70)
+print(f"Available: {stopwords.fileids()}")
+for lang in ['spanish', 'french', 'german']:
+    print(f"{lang.capitalize()} (first 8): {stopwords.words(lang)[:8]}")
+
+
+# ============================================================================
+# SECTION 5: PRACTICAL PIPELINE
+# ============================================================================
+
+print("\n" + "=" * 70)
+print("PIPELINE: Tokenize -> Stopword Removal -> Lemmatize")
+print("=" * 70)
+
+text = "The quick brown foxes were jumping over the lazy dogs in the beautiful gardens"
+
+doc = nlp(text)
+
+result = [t.lemma_.lower() for t in doc if not t.is_stop and t.is_alpha]
+
+print(f"\n Original: {text}")
+print(f"processed: {result}")
+print("""
+SUMMARY:
+- Stopwords = common filler words (the, is, a, and...)
+- NLTK: manual list filtering | SpaCy: token.is_stop attribute
+- Customizable: add domain words, keep negations for sentiment
+- Always consider your use case before removing stopwords!
+""")
